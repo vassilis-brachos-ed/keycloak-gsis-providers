@@ -98,14 +98,13 @@ public abstract class GsisAbstractIdentityProvider extends AbstractOAuth2Identit
     String firstname = getJsonProperty(profile, "firstname");
     String lastname = getJsonProperty(profile, "lastname");
 
-    BrokeredIdentityContext user = new BrokeredIdentityContext(username);
     OAuth2IdentityProviderConfig config = getConfig();
+    BrokeredIdentityContext user = new BrokeredIdentityContext(username, config);
 
     user.setUsername(username);
     user.setFirstName(firstname);
     user.setLastName(lastname);
     user.setEmail("");
-    user.setIdpConfig(config);
     user.setIdp(this);
 
     AbstractJsonUserAttributeMapper.storeUserProfileForMapper(user, profile, config.getAlias());
@@ -195,7 +194,7 @@ public abstract class GsisAbstractIdentityProvider extends AbstractOAuth2Identit
     return userSession.getNote(FEDERATED_ID_TOKEN);
   }
 
-  protected class OIDCEndpoint extends Endpoint {
+  protected static class OIDCEndpoint extends Endpoint {
     public OIDCEndpoint(AuthenticationCallback callback, RealmModel realm, EventBuilder event,
         AbstractOAuth2IdentityProvider provider) {
       super(callback, realm, event, provider);
